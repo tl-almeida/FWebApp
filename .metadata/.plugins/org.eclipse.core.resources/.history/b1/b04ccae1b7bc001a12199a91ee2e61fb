@@ -1,0 +1,9 @@
+package br.com.dattasign.desafio.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import br.com.dattasign.desafio.model.Receita;
+
+public class ReceitaRepository extends JpaRepository<Receita, Long>  {
+
+}

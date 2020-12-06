@@ -1,0 +1,131 @@
+package br.com.dattasign.desafio.controller;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import br.com.dattasign.desafio.model.Receita;
+import br.com.dattasign.desafio.repository.ReceitaRepository;
+
+@CrossOrigin(origins = "http://localhost:8081")
+@RestController
+@RequestMapping("/api")
+public class ReceitaController {
+
+	@Autowired
+	ReceitaRepository receitaRepository;
+
+	// Buscando lista com as receitas
+	@GetMapping("/receitas")
+	public ResponseEntity<List<Receita>> getAllReceitas(@RequestParam(required = false) String titulo) {
+		try {
+			List<Receita> receitas = new ArrayList<Receita>();
+
+			if (titulo == null) {
+				receitaRepository.findAll().forEach(receitas::add);
+			}/* else {
+				receitaRepository.findByTituloContendo(titulo).forEach(receitas::add);
+			}*/
+			
+			if (receitas.isEmpty()) {
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			}
+
+			return new ResponseEntity<>(HttpStatus.OK);
+
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@GetMapping("/receitas/{id}")
+	public ResponseEntity<Receita> getReceitaById(@PathVariable("id") long id) {
+		Optional<Receita> receitaData = receitaRepository.findById(id);
+
+		if (receitaData.isPresent()) {
+			return new ResponseEntity<>(receitaData.get(), HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	
+	// FUNCIONANDO
+	@PostMapping("/receitas")
+	public ResponseEntity<Receita> createReceita(@RequestBody Receita receita) {
+
+		try {
+			Receita _receita = receitaRepository.save(new Receita(receita.getTitulo(), receita.getDescricao(), false));
+			return new ResponseEntity<>(_receita, HttpStatus.CREATED);
+		} catch (Exception e) {
+			return new ResponseEntity<Receita>(HttpStatus.EXPECTATION_FAILED);
+		}
+	}
+
+	@PutMapping("/receitas/{id}")
+	public ResponseEntity<Receita> updateReceita(@PathVariable("id") long id, Receita receita) {
+		Optional<Receita> receitaData = receitaRepository.findById(id);
+
+		if (receitaData.isPresent()) {
+			Receita _receita = receitaData.get();
+			_receita.setTitulo(receita.getTitulo());
+			_receita.setDescricao(receita.getDescricao());
+			_receita.setPublicado(receita.isPublicado());
+			return new ResponseEntity<>(receitaRepository.save(_receita), HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	// FUNCIONANDO
+	@DeleteMapping("/receitas/{id}")
+	public ResponseEntity<HttpStatus> deleteReceita(@PathVariable("id") long id) {
+		try {
+			receitaRepository.deleteById(id);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+		}
+	}
+	
+	@DeleteMapping("/receitas")
+	public ResponseEntity<HttpStatus> deleteAllReceitas() {
+		try {
+			receitaRepository.deleteAll();
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+		}
+	}
+	
+	/*@GetMapping("receitas/publicadas")
+	public ResponseEntity<List<Receita>> findByPublicado() {
+		try {
+			List<Receita> receitas = receitaRepository.findByPublicado(true);
+			
+			if(receitas.isEmpty()) {
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			}
+			
+			return new ResponseEntity<>(receitas, HttpStatus.OK);
+			
+		} catch (Exception e) {
+			return new ResponseEntity<List<Receita>>(HttpStatus.EXPECTATION_FAILED);
+		}
+	}*/
+
+}

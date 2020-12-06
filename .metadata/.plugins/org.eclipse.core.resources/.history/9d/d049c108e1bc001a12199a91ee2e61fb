@@ -1,0 +1,15 @@
+package br.com.dattasign.desafio.repository;
+
+import java.io.Serializable;
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import br.com.dattasign.desafio.model.Receita;
+
+
+public interface ReceitaRepository<Receita, Long extends Serializable> extends JpaRepository<Receita, Long> {
+	//List<Receita> findPublicado(boolean publicado);
+	List<Receita> findTitulo(String titulo);
+}
+

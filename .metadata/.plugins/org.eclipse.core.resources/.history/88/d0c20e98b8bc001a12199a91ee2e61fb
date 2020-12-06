@@ -1,0 +1,11 @@
+package br.com.dattasign.desafio.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import br.com.dattasign.desafio.model.Receita;
+
+public class ReceitaRepository implements JpaRepository<Receita, Long>  {
+	List<Receita> findByPublicado(boolean publicado);
+	List<Receita> findByTitulo(String titulo);
+
+}

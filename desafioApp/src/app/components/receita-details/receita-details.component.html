@@ -1,0 +1,59 @@
+<div *ngIf="currentReceita" class="edit-form">
+    <h4>Receita</h4>
+    <form>
+        <div class="form-group">
+            <label for="titulo">Titulo</label>
+            <input
+                type="text"
+                class="form-control"
+                id="titulo"
+                [(ngModel)]="currentReceita.titulo"
+                name="titulo"
+            />
+        </div>
+        <div class="form-group">
+            <label for="descricao">Descrição</label>
+            <input
+                type="text"
+                class="form-control"
+                id="descricao"
+                [(ngModel)]="currentReceita.descricao"
+                name="descricao"
+            />
+        </div>
+        <div class="form-group">
+            <label><strong>Status:</strong></label>
+            {{ currentReceita.publicado ? "Publicado" : "Pendente"}}
+        </div>
+    </form>
+
+    <button
+        class="badge badge-primary mr-2"
+        *ngIf="currentReceita.publicado"
+        (click)="updatePublicado(false)"
+    > Despublicar
+    </button>
+    <button
+        class="badge badge-primary mr-2"
+        *ngIf="!currentReceita.publicado"
+        (click)="updatePublicado(true)"
+    > Publicar
+    </button>
+
+    <button class="badge badge-danger mr-2" (click)="deleteReceita()">
+        Deletar
+    </button>
+
+    <button 
+        type="submit"
+        class="badge badge-success"
+        (click)="updateReceita()"
+    > Editar
+    </button>
+    <p>{{ message }}</p>
+</div>
+
+<div *ngIf="!currentReceita">
+    <br/>
+    <p>Receita indisponível</p>
+</div>

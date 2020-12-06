@@ -1,0 +1,63 @@
+<div class="list row">
+    <div class="col-md-8">
+        <div class="input-group mb-3">
+            <input
+                type="text"
+                class="form-control"
+                placeholder="Busque por titulo"
+                [(ngModel)]="titulo"
+            />
+            <div class="input-group-append">
+                <button
+                    class="btn btn-outline-secondary"
+                    type="button"
+                    (click)="buscaTitulo()"
+                > Buscar
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <h4>Lista de Receitas</h4>
+        <ul class="list-group">
+            <li
+                class="list-group-item"
+                *ngFor="let receita of receitas; let i = index"
+                [class.active]="i == currentIndex"
+                (click)="setAtiveReceita(receita, i)"
+            > {{receita.titulo}}
+            </li>
+        </ul>
+
+        <button 
+            class="m-3 btn btn-sm btn-danger" 
+            (click)="removeAllReceitas()"
+        > Remover Todos
+        </button>
+    </div>
+    <div class="col-md-6">
+        <div *ngIf="currentReceita">
+            <h4>Receita</h4>
+            <div>
+                <label><strong>Titulo:</strong></label>
+                {{ currentReceita.titulo}}
+            </div>
+            <div>
+                <label><strong>Descricao:</strong></label>
+                {{currentReceita.descricao}}
+            </div>
+            <div>
+                <label><strong>Status:</strong></label>
+                {{ currentReceita.publicado ? "Publicado" : "Pendente"}}
+            </div>
+
+            <a class="badge badge-warning" href="/receitas/{{ currentReceita.id }}">
+                Editar
+            </a>
+        </div>
+        <div *ngIf="!currentReceita">
+            <br/>
+            <p>Por favor, clique na receita.</p>
+        </div>
+    </div>
+</div>
